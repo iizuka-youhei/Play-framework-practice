@@ -1,0 +1,13 @@
+@(message:String, postform:Form[PostForm])
+
+@main("add post") {
+    <p>@message</p>
+    @helper.form(action=routes.HomeController.create()) {
+        @helper.CSRF.formField
+        @helper.inputText(form("name"))
+        @helper.inputText(form("message"))
+        @helper.inputText(form("link"))
+        @helper.inputText(form("delete_key"))
+        <button>Create Post</button>
+    }
+}

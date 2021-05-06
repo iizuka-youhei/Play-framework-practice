@@ -1,0 +1,11 @@
+@(msg:String, data:List[MicropostEntity])
+
+@main("Welcome to Play") {
+  <h1>Welcome to Play!</h1>
+  <h2>@msg</h2>
+  <ul>
+    @for(item <- data) {
+      <li>@item</li>
+    }
+  </ul>
+}
