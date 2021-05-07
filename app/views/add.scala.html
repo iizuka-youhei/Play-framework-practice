@@ -1,8 +1,9 @@
-@(message:String, postform:Form[PostForm])
+@import play.mvc.Http.Request
+@(message:String, form:Form[PostForm])(implicit request: Request, messages: play.i18n.Messages)
 
 @main("add post") {
     <p>@message</p>
-    @helper.form(action=routes.HomeController.create()) {
+    @helper.form(routes.HomeController.create) {
         @helper.CSRF.formField
         @helper.inputText(form("name"))
         @helper.inputText(form("message"))

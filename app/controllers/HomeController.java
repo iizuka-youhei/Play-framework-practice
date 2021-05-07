@@ -8,6 +8,7 @@ import javax.inject.*;
 import play.mvc.*; // 初めからあった
 import play.data.*;
 import io.ebean.*;
+import play.i18n.MessagesApi;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -17,11 +18,14 @@ public class HomeController extends Controller {
     private final Form<PostForm> postform;
     private final FormFactory formFactory;
     private final MicropostRepository repo;
+    private MessagesApi messagesApi;
+
     @Inject
-    public HomeController(FormFactory formFactory, MicropostRepository micropostRepository) {
+    public HomeController(FormFactory formFactory, MicropostRepository micropostRepository, MessagesApi messagesApi) {
         this.formFactory = formFactory;
         this.postform = formFactory.form(PostForm.class);
         this.repo = micropostRepository;
+        this.messagesApi = messagesApi;
     }
 
     /**
@@ -41,19 +45,23 @@ public class HomeController extends Controller {
     public Result show(int id) {
         return ok(views.html.show.render(
             "Show Micropost",
-            repo.get(id), id
+            repo.get(id),
+            // Ebean.find(MicropostEntity.class, id), // Ebeanクラスを利用する方法
+            id
         ));
     }
 
-    public Result add() {
+    public Result add(Http.Request request) {
         return ok(views.html.add.render(
             "フォーム",
-            postform
+            postform,
+            request,
+            messagesApi.preferred(request)
         ));
     }
 
-    public Result create() {
-        MicropostEntity micropost = formFactory.form(MicropostEntity.class).bindFromRequest().get();
+    public Result create(Http.Request request) {
+        MicropostEntity micropost = formFactory.form(MicropostEntity.class).bindFromRequest(request).get();
         repo.add(micropost);
         return redirect(routes.HomeController.index());
     }
