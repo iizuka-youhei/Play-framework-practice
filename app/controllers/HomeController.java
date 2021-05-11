@@ -66,6 +66,45 @@ public class HomeController extends Controller {
         return redirect(routes.HomeController.index());
     }
 
+    public Result edit(int id, Http.Request request) {
+        MicropostEntity micropost = repo.get(id);
+        PostForm form = new PostForm(id);
+        form.setName(micropost.name);
+        form.setMessage(micropost.message);
+        form.setLink(micropost.link);
+        form.setDeleteKey(micropost.delete_key);
+        Form<PostForm> formdata = postform.fill(form);
+        return ok(views.html.edit.render(
+            "投稿の編集",
+            formdata,
+            id,
+            request,
+            messagesApi.preferred(request)
+        ));
+    }
+
+    public Result update(int id, Http.Request request) {
+        PostForm form = formFactory.form(PostForm.class).bindFromRequest(request).get();
+        MicropostEntity post = new MicropostEntity(id, form.getName(), form.getMessage(), form.getLink(), form.getDeleteKey());
+        repo.update(post);
+        return redirect(routes.HomeController.index());
+    }
+
+    public Result delete(int id, Http.Request request) {
+        return ok(views.html.delete.render(
+            "投稿の削除",
+            repo.get(id),
+            id,
+            request,
+            messagesApi.preferred(request)
+        ));
+    }
+
+    public Result remove(int id) {
+        repo.delete(id);
+        return redirect(routes.HomeController.index());
+    }
+
     public Result hello(String name) {
         return ok(views.html.hello.render(name));
     }

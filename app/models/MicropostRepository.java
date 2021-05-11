@@ -25,4 +25,16 @@ public class MicropostRepository {
         micropost.save();
     }
 
+    public void update(MicropostEntity micropost) {
+        micropost.update();
+    }
+
+    public void delete(int id) {
+        find.byId(id).delete();
+    }
+
+    public void delete(MicropostEntity micropost) {
+        micropost.delete();
+    }
+
 }

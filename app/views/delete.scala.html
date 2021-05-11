@@ -1,0 +1,15 @@
+@import play.mvc.Http.Request
+@(message:String, data:MicropostEntity, id:Int)(implicit request: Request, messages: play.i18n.Messages)
+
+@main("Show Micropost") {
+    <h2>@message</h2>
+    <h3>以下の投稿を削除します。</h3>
+    <p>ID : @data.id</p>
+    <p>name : @data.name</p>
+    <p>メッセージ : @data.message</p>
+
+    @helper.form(action=routes.HomeController.remove(id)) {
+        @helper.CSRF.formField
+        <button>投稿を削除</button>
+    }
+}
