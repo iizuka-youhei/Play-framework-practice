@@ -1,11 +1,32 @@
-@(msg:String, data:List[MicropostEntity])
+@import play.mvc.Http.Request
+@(msg:String, data:List[MicropostEntity], postform:Form[PostForm])(implicit request: Request, messages: play.i18n.Messages)
 
 @main("Welcome to Play") {
-  <h1>Welcome to Play!</h1>
+  <h1>掲示板</h1>
+  @helper.form(action=routes.HomeController.create()) {
+    @helper.CSRF.formField
+    @helper.inputText(postform("name"))
+    @helper.inputText(postform("title"))
+    @helper.inputText(postform("message"))
+    @helper.inputText(postform("link"))
+    @helper.inputText(postform("deletekey"))
+    <button>投稿する</button>
+  }
   <h2>@msg</h2>
   <ul>
-    @for(item <- data) {
-      <li>@item</li>
+    @for(post <- data) {
+      <li>
+        <div>投稿ID：@post.id</div>
+        <div>投稿者：@post.name</div>
+        <div>タイトル：@post.title</div>
+        @post.message<br>
+        <a href="@post.link">@post.link</a><br>
+        @post.created_at<br>
+        <!-- @post.deletekey -->
+        <div><a href="@routes.HomeController.edit(post.id)">編集する</a></div>
+        <div><a href="@routes.HomeController.delete(post.id)">削除する</a></div>
+      </li>
+      <br>
     }
   </ul>
 }

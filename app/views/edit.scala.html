@@ -8,9 +8,10 @@
         
         @helper.CSRF.formField
         @helper.inputText(postform("name"))
+        @helper.inputText(postform("title"))
         @helper.inputText(postform("message"))
         @helper.inputText(postform("link"))
-        @helper.inputText(postform("delete_key"))
+        @helper.inputText(postform("deletekey"))
         <button>内容を更新する</button>
 
     }

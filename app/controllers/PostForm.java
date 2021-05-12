@@ -1,13 +1,16 @@
 package controllers;
 
+import java.util.Date;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class PostForm {
     protected int id;
     protected String name;
+    protected String title;
     protected String message;
     protected String link;
-    protected String delete_key;
+    protected String deletekey;
 
     public PostForm() {
         super();
@@ -26,6 +29,14 @@ public class PostForm {
         return name;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }
@@ -42,12 +53,12 @@ public class PostForm {
         return link;
     }
 
-    public void setDeleteKey(String delete_key) {
-        this.delete_key = delete_key;
+    public void setDeletekey(String deletekey) {
+        this.deletekey = deletekey;
     }
 
-    public String getDeleteKey() {
-        return delete_key;
+    public String getDeletekey() {
+        return deletekey;
     }
 
 }

@@ -5,7 +5,7 @@ import models.*;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.*;
 import javax.inject.*;
-import play.mvc.*; // 初めからあった
+import play.mvc.*;
 import play.data.*;
 import io.ebean.*;
 import play.i18n.MessagesApi;
@@ -34,11 +34,13 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
-    public Result index() {
+    public Result index(Http.Request request) {
         return ok(views.html.index.render(
-            "Micropost List.",
-            repo.list()
-            // Ebean.find(MicropostEntity.class).findList() // Ebeanクラスを利用する方法
+            "投稿一覧",
+            repo.list(),
+            postform,
+            request,
+            messagesApi.preferred(request)
         ));
     }
 
@@ -46,17 +48,7 @@ public class HomeController extends Controller {
         return ok(views.html.show.render(
             "Show Micropost",
             repo.get(id),
-            // Ebean.find(MicropostEntity.class, id), // Ebeanクラスを利用する方法
             id
-        ));
-    }
-
-    public Result add(Http.Request request) {
-        return ok(views.html.add.render(
-            "フォーム",
-            postform,
-            request,
-            messagesApi.preferred(request)
         ));
     }
 
@@ -70,9 +62,11 @@ public class HomeController extends Controller {
         MicropostEntity micropost = repo.get(id);
         PostForm form = new PostForm(id);
         form.setName(micropost.name);
+        form.setTitle(micropost.title);
         form.setMessage(micropost.message);
         form.setLink(micropost.link);
-        form.setDeleteKey(micropost.delete_key);
+        form.setDeletekey(micropost.deletekey);
+
         Form<PostForm> formdata = postform.fill(form);
         return ok(views.html.edit.render(
             "投稿の編集",
@@ -85,7 +79,8 @@ public class HomeController extends Controller {
 
     public Result update(int id, Http.Request request) {
         PostForm form = formFactory.form(PostForm.class).bindFromRequest(request).get();
-        MicropostEntity post = new MicropostEntity(id, form.getName(), form.getMessage(), form.getLink(), form.getDeleteKey());
+        MicropostEntity post = new MicropostEntity(id, form.getName(), form.getTitle(), form.getMessage(), form.getLink(), form.getDeletekey());
+        System.out.println(form.getDeletekey());
         repo.update(post);
         return redirect(routes.HomeController.index());
     }
@@ -95,17 +90,24 @@ public class HomeController extends Controller {
             "投稿の削除",
             repo.get(id),
             id,
+            postform,
             request,
             messagesApi.preferred(request)
         ));
     }
 
-    public Result remove(int id) {
-        repo.delete(id);
-        return redirect(routes.HomeController.index());
+    public Result remove(int id, Http.Request request) {
+        MicropostEntity post = repo.get(id);
+        PostForm form = formFactory.form(PostForm.class).bindFromRequest(request).get();
+        
+        System.out.println(request);
+        
+
+        if(form.getDeletekey().equals(post.deletekey)){
+            repo.delete(id);
+            return redirect(routes.HomeController.index());
+        }
+        return redirect(routes.HomeController.delete(post.id));
     }
 
-    public Result hello(String name) {
-        return ok(views.html.hello.render(name));
-    }
 }
