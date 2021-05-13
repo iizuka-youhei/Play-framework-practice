@@ -1,0 +1,14 @@
+@import play.mvc.Http.Request
+@(message:String, userform:Form[UserForm])(implicit request: Request, messages: play.i18n.Messages)
+
+@main("login") {
+    <h2>@message</h2>
+
+    @helper.form(action=routes.UserController.logincheck) {
+        @helper.CSRF.formField
+        @helper.inputText(userform("email"))
+        @helper.inputText(userform("password"))
+
+        <button>投稿を削除</button>
+    }
+}
