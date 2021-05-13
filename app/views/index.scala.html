@@ -21,7 +21,7 @@
         <div>タイトル：@post.title</div>
         @post.message<br>
         <a href="@post.link">@post.link</a><br>
-        @post.created_at<br>
+        @post.updated_at<br>
         <!-- @post.deletekey -->
         <div><a href="@routes.HomeController.edit(post.id)">編集する</a></div>
         <div><a href="@routes.HomeController.delete(post.id)">削除する</a></div>

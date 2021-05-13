@@ -46,16 +46,27 @@ public class HomeController extends Controller {
 
     public Result show(int id) {
         return ok(views.html.show.render(
-            "Show Micropost",
+            "投稿の表示",
             repo.get(id),
             id
         ));
     }
 
     public Result create(Http.Request request) {
-        MicropostEntity micropost = formFactory.form(MicropostEntity.class).bindFromRequest(request).get();
-        repo.add(micropost);
-        return redirect(routes.HomeController.index());
+        Form form = formFactory.form(MicropostEntity.class);
+        try {
+            MicropostEntity micropost = (MicropostEntity)form.bindFromRequest(request).get();
+            repo.add(micropost);
+            return redirect(routes.HomeController.index());
+        } catch(IllegalStateException e) {
+            return ok(views.html.index.render(
+                "投稿一覧",
+                repo.list(),
+                form.bindFromRequest(request),
+                request,
+                messagesApi.preferred(request)
+            ));
+        }
     }
 
     public Result edit(int id, Http.Request request) {
@@ -78,11 +89,25 @@ public class HomeController extends Controller {
     }
 
     public Result update(int id, Http.Request request) {
-        PostForm form = formFactory.form(PostForm.class).bindFromRequest(request).get();
-        MicropostEntity post = new MicropostEntity(id, form.getName(), form.getTitle(), form.getMessage(), form.getLink(), form.getDeletekey());
-        System.out.println(form.getDeletekey());
-        repo.update(post);
-        return redirect(routes.HomeController.index());
+        // PostForm form = formFactory.form(PostForm.class).bindFromRequest(request).get();
+        // MicropostEntity post = new MicropostEntity(id, form.getName(), form.getTitle(), form.getMessage(), form.getLink(), form.getDeletekey());
+        // repo.update(post);
+        // return redirect(routes.HomeController.index());
+        Form form = formFactory.form(MicropostEntity.class);
+        try {
+            MicropostEntity micropost = (MicropostEntity)form.bindFromRequest(request).get();
+            MicropostEntity post = new MicropostEntity(id, micropost.name, micropost.title, micropost.message, micropost.link, micropost.deletekey);
+            repo.update(post);
+            return redirect(routes.HomeController.index());
+        } catch(IllegalStateException e) {
+            return ok(views.html.edit.render(
+                "投稿の編集",
+                form.bindFromRequest(request),
+                id,
+                request,
+                messagesApi.preferred(request)
+            ));
+        }
     }
 
     public Result delete(int id, Http.Request request) {
