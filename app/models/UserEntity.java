@@ -11,6 +11,8 @@ import play.data.validation.Constraints.*;
 import io.ebean.*;
 import jdk.jfr.Registered;
 
+@Entity
+@Table(name = "user")
 public class UserEntity extends Model{
     @Id
     public Integer id;

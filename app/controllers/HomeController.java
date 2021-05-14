@@ -34,11 +34,31 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
+    @With(BeforeAction.class)
     public Result index(Http.Request request) {
+        UserEntity currentUser = null;
+        if(request.session().get("login").isPresent()) {
+            // System.out.println("login now");
+            // System.out.println(request.session().get("login").get());
+            currentUser = Ebean.find(UserEntity.class).where().eq("email", request.session().get("login").get()).findOne();
+            // System.out.println(currentUser.name);
+        } else {
+            // System.out.println("logout now");
+        }
+        // System.out.println(request.session().get("login"));
+
+        // if(currentUser == null) {
+        //     System.out.println("nullです");
+        // } else {
+        //     System.out.println("nullじゃないです");
+        // }
+        
+
         return ok(views.html.index.render(
             "投稿一覧",
             repo.list(),
             postform,
+            currentUser,
             request,
             messagesApi.preferred(request)
         ));
@@ -59,13 +79,15 @@ public class HomeController extends Controller {
             repo.add(micropost);
             return redirect(routes.HomeController.index());
         } catch(IllegalStateException e) {
-            return ok(views.html.index.render(
-                "投稿一覧",
-                repo.list(),
-                form.bindFromRequest(request),
-                request,
-                messagesApi.preferred(request)
-            ));
+            // return ok(views.html.index.render(
+            //     "投稿一覧",
+            //     repo.list(),
+            //     form.bindFromRequest(request),
+            //     request,
+            //     messagesApi.preferred(request)
+            // ));
+            return redirect(routes.HomeController.index());
+
         }
     }
 
@@ -89,10 +111,6 @@ public class HomeController extends Controller {
     }
 
     public Result update(int id, Http.Request request) {
-        // PostForm form = formFactory.form(PostForm.class).bindFromRequest(request).get();
-        // MicropostEntity post = new MicropostEntity(id, form.getName(), form.getTitle(), form.getMessage(), form.getLink(), form.getDeletekey());
-        // repo.update(post);
-        // return redirect(routes.HomeController.index());
         Form form = formFactory.form(MicropostEntity.class);
         try {
             MicropostEntity micropost = (MicropostEntity)form.bindFromRequest(request).get();

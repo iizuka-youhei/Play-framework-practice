@@ -35,10 +35,14 @@ public class UserController extends Controller{
 
     public Result logincheck(Http.Request request) {
         UserForm form = formFactory.form(UserForm.class).bindFromRequest(request).get();
-        List<UserEntity> users = repo.get("email", form.getEmail());
-        // if(form.getPassword().equals(users.get(0).password)) {
-        //     return redirect(routes.HomeController.index());
-        // }
-        return redirect(routes.HomeController.show(1));
+        List<UserEntity> user = repo.get("email", form.getEmail());
+        if(form.getPassword().equals(user.get(0).password)) {
+            return redirect(routes.HomeController.index()).addingToSession(request, "login", user.get(0).email);
+        }
+        return redirect(routes.UserController.login());
+    }
+
+    public Result logout(Http.Request request) {
+        return redirect(routes.HomeController.index()).removingFromSession(request, "login");
     }
 }

@@ -1,8 +1,15 @@
 @import play.mvc.Http.Request
-@(msg:String, data:List[MicropostEntity], postform:Form[PostForm])(implicit request: Request, messages: play.i18n.Messages)
+@(msg:String, data:List[MicropostEntity], postform:Form[PostForm], currentUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
 
 @main("Welcome to Play") {
-  <div><a href="@routes.UserController.login()">ログイン</a></div>
+  @if(request.session().get("login").isPresent()) {
+    <div><a href="@routes.UserController.logout()">ログアウト</a></div>
+    <div>ようこそ@currentUser.name</div>
+  } else {
+    <div><a href="@routes.UserController.login()">ログイン</a></div>
+  }
+ 
+
   <h1>掲示板</h1>
   @helper.form(action=routes.HomeController.create()) {
     @helper.CSRF.formField
