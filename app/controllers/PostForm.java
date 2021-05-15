@@ -7,18 +7,10 @@ import play.data.validation.Constraints.*;
 
 public class PostForm {
     protected int id;
-    // @Required(message="名前は必須項目です")
-    // @MaxLength(value=10, message = "入力できるのは10文字までです")
     protected String name;
-    // @Required(message="タイトルは必須項目です")
-    // @MaxLength(value=30, message="入力できるのは30文字までです")
     protected String title;
-    // @Required(message="メッセージは必須項目です")
-    // @MaxLength(value=200, message="入力できるのは200文字までです")
     protected String message;
     protected String link;
-    // @Required(message= "削除キーは必須項目です")
-    // @MaxLength(value=10, message = "入力できるのは10文字までです")
     protected String deletekey;
 
     public PostForm() {

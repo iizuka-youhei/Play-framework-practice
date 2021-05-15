@@ -36,29 +36,13 @@ public class HomeController extends Controller {
      */
     @With(BeforeAction.class)
     public Result index(Http.Request request) {
-        UserEntity currentUser = null;
-        if(request.session().get("login").isPresent()) {
-            // System.out.println("login now");
-            // System.out.println(request.session().get("login").get());
-            currentUser = Ebean.find(UserEntity.class).where().eq("email", request.session().get("login").get()).findOne();
-            // System.out.println(currentUser.name);
-        } else {
-            // System.out.println("logout now");
-        }
-        // System.out.println(request.session().get("login"));
-
-        // if(currentUser == null) {
-        //     System.out.println("nullです");
-        // } else {
-        //     System.out.println("nullじゃないです");
-        // }
-        
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
 
         return ok(views.html.index.render(
             "投稿一覧",
             repo.list(),
             postform,
-            currentUser,
+            loginUser,
             request,
             messagesApi.preferred(request)
         ));
@@ -72,21 +56,23 @@ public class HomeController extends Controller {
         ));
     }
 
+    @With(BeforeAction.class)
     public Result create(Http.Request request) {
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
         Form form = formFactory.form(MicropostEntity.class);
         try {
             MicropostEntity micropost = (MicropostEntity)form.bindFromRequest(request).get();
             repo.add(micropost);
             return redirect(routes.HomeController.index());
         } catch(IllegalStateException e) {
-            // return ok(views.html.index.render(
-            //     "投稿一覧",
-            //     repo.list(),
-            //     form.bindFromRequest(request),
-            //     request,
-            //     messagesApi.preferred(request)
-            // ));
-            return redirect(routes.HomeController.index());
+            return badRequest(views.html.index.render(
+                "投稿一覧",
+                repo.list(),
+                form.bindFromRequest(request),
+                loginUser,
+                request,
+                messagesApi.preferred(request)
+            ));
 
         }
     }
