@@ -7,11 +7,9 @@ import play.data.validation.Constraints.*;
 
 public class PostForm {
     protected int id;
-    protected String name;
     protected String title;
     protected String message;
     protected String link;
-    protected String deletekey;
 
     public PostForm() {
         super();
@@ -20,14 +18,6 @@ public class PostForm {
     public PostForm(int id) {
         super();
         this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setTitle(String title) {
@@ -52,14 +42,6 @@ public class PostForm {
 
     public String getLink() {
         return link;
-    }
-
-    public void setDeletekey(String deletekey) {
-        this.deletekey = deletekey;
-    }
-
-    public String getDeletekey() {
-        return deletekey;
     }
 
 }

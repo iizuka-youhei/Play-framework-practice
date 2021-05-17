@@ -1,6 +1,7 @@
 package models;
 
 import java.sql.Timestamp;
+import java.util.*;
 import java.util.Date;
 
 import javax.persistence.*;
@@ -19,6 +20,10 @@ public class UserEntity extends Model{
     public String name;
     public String email;
     public String password;
+
+    @OneToMany(mappedBy = "user")
+    public List<MicropostEntity> microposts = new ArrayList<MicropostEntity>();
+
     public Date created_at;
     public Date updated_at;
 

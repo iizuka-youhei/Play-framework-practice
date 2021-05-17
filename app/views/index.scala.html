@@ -1,38 +1,41 @@
 @import play.mvc.Http.Request
-@(msg:String, data:List[MicropostEntity], postform:Form[PostForm], currentUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
+@(msg:String, data:List[MicropostEntity], postform:Form[PostForm], loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
 
 @main("Welcome to Play") {
   @if(request.session().get("login").isPresent()) {
     <div><a href="@routes.UserController.logout()">ログアウト</a></div>
-    <div>ようこそ@currentUser.name</div>
+    <div>ようこそ@loginUser.name</div>
   } else {
     <div><a href="@routes.UserController.login()">ログイン</a></div>
   }
  
 
   <h1>掲示板</h1>
-  @helper.form(action=routes.HomeController.create()) {
-    @helper.CSRF.formField
-    @helper.inputText(postform("name"))
-    @helper.inputText(postform("title"))
-    @helper.inputText(postform("message"))
-    @helper.inputText(postform("link"))
-    @helper.inputText(postform("deletekey"))
-    <button>投稿する</button>
+  @if(request.session().get("login").isPresent()) {
+    @helper.form(action=routes.HomeController.create()) {
+      @helper.CSRF.formField
+      @helper.inputText(postform("title"))
+      @helper.inputText(postform("message"))
+      @helper.inputText(postform("link"))
+      @helper.inputText(postform("deletekey"))
+      <button>投稿する</button>
+    }
   }
+  
   <h2>@msg</h2>
   <ul>
     @for(post <- data) {
       <li>
         <div>投稿ID：@post.id</div>
-        <div>投稿者：@post.name</div>
+        <div>投稿者：@post.user.name</div>
         <div>タイトル：@post.title</div>
         @post.message<br>
         <a href="@post.link">@post.link</a><br>
         @post.updated_at<br>
-        <!-- @post.deletekey -->
-        <div><a href="@routes.HomeController.edit(post.id)">編集する</a></div>
-        <div><a href="@routes.HomeController.delete(post.id)">削除する</a></div>
+        @if(request.session().get("login").isPresent() && post.user.id == loginUser.id){
+          <div><a href="@routes.HomeController.edit(post.id)">編集する</a></div>
+          <div><a href="@routes.HomeController.delete(post.id)">削除する</a></div>
+        }
       </li>
       <br>
     }
