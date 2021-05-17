@@ -4,7 +4,7 @@
 @main("Welcome to Play") {
   @if(request.session().get("login").isPresent()) {
     <div><a href="@routes.UserController.logout()">ログアウト</a></div>
-    <div>ようこそ@loginUser.name</div>
+    <div>ようこそ@loginUser.getName()</div>
   } else {
     <div><a href="@routes.UserController.login()">ログイン</a></div>
   }
@@ -25,15 +25,15 @@
   <ul>
     @for(post <- data) {
       <li>
-        <div>投稿ID：@post.id</div>
-        <div>投稿者：@post.user.name</div>
-        <div>タイトル：@post.title</div>
-        @post.message<br>
-        <a href="@post.link">@post.link</a><br>
+        <div>投稿ID：@post.getId()</div>
+        <div>投稿者：@post.user.getName()</div>
+        <div>タイトル：@post.getTitle()</div>
+        @post.getMessage()<br>
+        <a href="@post.getLink()">@post.getLink()</a><br>
         @post.getDate()<br>
-        @if(request.session().get("login").isPresent() && post.user.id == loginUser.id){
-          <div><a href="@routes.HomeController.edit(post.id)">編集する</a></div>
-          <div><a href="@routes.HomeController.delete(post.id)">削除する</a></div>
+        @if(request.session().get("login").isPresent() && post.user.getId() == loginUser.getId()){
+          <div><a href="@routes.HomeController.edit(post.getId())">編集する</a></div>
+          <div><a href="@routes.HomeController.delete(post.getId())">削除する</a></div>
         }
       </li>
       <br>

@@ -18,16 +18,16 @@ import java.text.SimpleDateFormat;
 @Table(name = "user")
 public class UserEntity extends Model{
     @Id
-    public Integer id;
-    public String name;
-    public String email;
-    public String password;
+    private Integer id;
+    private String name;
+    private String email;
+    private String password;
 
     @OneToMany(mappedBy = "user")
     public List<MicropostEntity> microposts = new ArrayList<MicropostEntity>();
 
-    public Date created_at;
-    public Date updated_at;
+    private Date created_at;
+    private Date updated_at;
 
     public UserEntity() {
         super();
@@ -42,6 +42,30 @@ public class UserEntity extends Model{
         this.password = password;
 
         this.updated_at = new Timestamp(new Date().getTime());
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getDate() {

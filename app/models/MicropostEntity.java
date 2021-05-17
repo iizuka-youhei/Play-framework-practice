@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 @Table(name = "micropost")
 public class MicropostEntity extends Model{
     @Id
-    public Integer id;
+    private Integer id;
     
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -26,15 +26,15 @@ public class MicropostEntity extends Model{
 
     @Required(message="タイトルは必須項目です")
     @MaxLength(value=30, message="入力できるのは30文字までです")
-    public String title;
+    private String title;
 
     @Required(message="メッセージは必須項目です")
     @MaxLength(value=200, message="入力できるのは200文字までです")
-    public String message;
+    private String message;
 
-    public String link;
-    public Date created_at;
-    public Date updated_at;
+    private String link;
+    private Date created_at;
+    private Date updated_at;
 
     public MicropostEntity() {
         super();
@@ -52,6 +52,41 @@ public class MicropostEntity extends Model{
         this.updated_at = new Timestamp(new Date().getTime());
     }
 
+    public int getId() {
+        return id;
+    }
+
+    // public void setUser(UserEntity user) {
+    //     this.user = user;
+    // }
+
+    // public UserEntity getUser() {
+    //     return user;
+    // }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getLink() {
+        return link;
+    }
 
     public String getDate() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd (E) HH:mm:ss");

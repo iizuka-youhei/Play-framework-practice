@@ -4,9 +4,9 @@
 @main("Show Micropost") {
     <h2>@message</h2>
     <h3>以下の投稿を削除します。</h3>
-    <p>ID : @post.id</p>
-    <p>name : @post.user.name</p>
-    <p>メッセージ : @post.message</p>
+    <p>ID : @post.getId()</p>
+    <p>name : @post.user.getName()</p>
+    <p>メッセージ : @post.getMessage()</p>
 
     @helper.form(action=routes.HomeController.remove(id)) {
         @helper.CSRF.formField

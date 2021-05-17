@@ -79,13 +79,13 @@ public class HomeController extends Controller {
     public Result edit(int id, Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity micropost = repo.get(id);
-        if(loginUser == null || micropost.user.id != loginUser.id) {
+        if(loginUser == null || micropost.user.getId() != loginUser.getId()) {
             return redirect(routes.HomeController.index()); // 不適切なユーザの場合
         }
         PostForm form = new PostForm(id);
-        form.setTitle(micropost.title);
-        form.setMessage(micropost.message);
-        form.setLink(micropost.link);
+        form.setTitle(micropost.getTitle());
+        form.setMessage(micropost.getMessage());
+        form.setLink(micropost.getLink());
 
         Form<PostForm> formdata = postform.fill(form);
         return ok(views.html.edit.render(
@@ -101,13 +101,13 @@ public class HomeController extends Controller {
     public Result update(int id, Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity microPost = repo.get(id);
-        if(loginUser == null || microPost.user.id != loginUser.id) {
+        if(loginUser == null || microPost.user.getId() != loginUser.getId()) {
             return redirect(routes.HomeController.index()); // 不適切なユーザの場合
         }
         Form form = formFactory.form(MicropostEntity.class);
         try {
             MicropostEntity micropost = (MicropostEntity)form.bindFromRequest(request).get();
-            MicropostEntity post = new MicropostEntity(id, loginUser, micropost.title, micropost.message, micropost.link);
+            MicropostEntity post = new MicropostEntity(id, loginUser, micropost.getTitle(), micropost.getMessage(), micropost.getLink());
             repo.update(post);
             return redirect(routes.HomeController.index());
         } catch(IllegalStateException e) {
@@ -125,7 +125,7 @@ public class HomeController extends Controller {
     public Result delete(int id, Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity post = repo.get(id);
-        if(loginUser == null || post.user.id != loginUser.id) {
+        if(loginUser == null || post.user.getId() != loginUser.getId()) {
             return redirect(routes.HomeController.index()); // 不適切なユーザの場合
         }
         return ok(views.html.delete.render(
@@ -142,7 +142,7 @@ public class HomeController extends Controller {
     public Result remove(int id, Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity post = repo.get(id);
-        if(loginUser != null && post.user.id == loginUser.id) {
+        if(loginUser != null && post.user.getId() == loginUser.getId()) {
             repo.delete(post);
         }
         return redirect(routes.HomeController.index());

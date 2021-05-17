@@ -36,8 +36,8 @@ public class UserController extends Controller{
     public Result logincheck(Http.Request request) {
         UserForm form = formFactory.form(UserForm.class).bindFromRequest(request).get();
         List<UserEntity> user = repo.get("email", form.getEmail());
-        if(form.getPassword().equals(user.get(0).password)) {
-            return redirect(routes.HomeController.index()).addingToSession(request, "login", user.get(0).email);
+        if(form.getPassword().equals(user.get(0).getPassword())) {
+            return redirect(routes.HomeController.index()).addingToSession(request, "login", user.get(0).getEmail());
         }
         return redirect(routes.UserController.login());
     }
