@@ -7,8 +7,8 @@
     @helper.form(action=routes.UserController.logincheck) {
         @helper.CSRF.formField
         @helper.inputText(userform("email"))
-        @helper.inputText(userform("password"))
+        @helper.inputPassword(userform("password"))
 
-        <button>投稿を削除</button>
+        <button>ログインする</button>
     }
 }

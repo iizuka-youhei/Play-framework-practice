@@ -8,7 +8,7 @@
         
         @helper.CSRF.formField
         @helper.inputText(postform("title"))
-        @helper.inputText(postform("message"))
+        @helper.textarea(postform("message"))
         @helper.inputText(postform("link"))
         <button>内容を更新する</button>
 
