@@ -53,6 +53,9 @@ public class HomeController extends Controller {
     @With(BeforeAction.class)
     public Result create(Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
+        if(loginUser == null) {
+            return redirect(routes.HomeController.index()); // 不適切なユーザの場合
+        }
         Form form = formFactory.form(MicropostEntity.class);
         try {
             MicropostEntity micropost = (MicropostEntity)form.bindFromRequest(request).get();
@@ -76,7 +79,7 @@ public class HomeController extends Controller {
     public Result edit(int id, Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity micropost = repo.get(id);
-        if(micropost.user.id != loginUser.id) {
+        if(loginUser == null || micropost.user.id != loginUser.id) {
             return redirect(routes.HomeController.index()); // 不適切なユーザの場合
         }
         PostForm form = new PostForm(id);
@@ -98,7 +101,7 @@ public class HomeController extends Controller {
     public Result update(int id, Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity microPost = repo.get(id);
-        if(microPost.user.id != loginUser.id) {
+        if(loginUser == null || microPost.user.id != loginUser.id) {
             return redirect(routes.HomeController.index()); // 不適切なユーザの場合
         }
         Form form = formFactory.form(MicropostEntity.class);
@@ -122,7 +125,7 @@ public class HomeController extends Controller {
     public Result delete(int id, Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity post = repo.get(id);
-        if(post.user.id != loginUser.id) {
+        if(loginUser == null || post.user.id != loginUser.id) {
             return redirect(routes.HomeController.index()); // 不適切なユーザの場合
         }
         return ok(views.html.delete.render(
@@ -139,7 +142,7 @@ public class HomeController extends Controller {
     public Result remove(int id, Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity post = repo.get(id);
-        if(post.user.id == loginUser.id) {
+        if(loginUser != null && post.user.id == loginUser.id) {
             repo.delete(post);
         }
         return redirect(routes.HomeController.index());
