@@ -30,7 +30,7 @@
         <div>タイトル：@post.title</div>
         @post.message<br>
         <a href="@post.link">@post.link</a><br>
-        @post.updated_at<br>
+        @post.getDate()<br>
         @if(request.session().get("login").isPresent() && post.user.id == loginUser.id){
           <div><a href="@routes.HomeController.edit(post.id)">編集する</a></div>
           <div><a href="@routes.HomeController.delete(post.id)">削除する</a></div>

@@ -12,6 +12,8 @@ import play.data.validation.Constraints.*;
 import io.ebean.*;
 import jdk.jfr.Registered;
 
+import java.text.SimpleDateFormat;
+
 @Entity
 @Table(name = "user")
 public class UserEntity extends Model{
@@ -40,5 +42,10 @@ public class UserEntity extends Model{
         this.password = password;
 
         this.updated_at = new Timestamp(new Date().getTime());
+    }
+
+    public String getDate() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd (E) HH:mm:ss");
+        return df.format(this.updated_at);
     }
 }

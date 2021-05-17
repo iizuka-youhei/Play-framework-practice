@@ -11,6 +11,9 @@ import play.data.validation.Constraints.*;
 import io.ebean.*;
 import jdk.jfr.Registered;
 
+import java.text.SimpleDateFormat;
+
+
 @Entity
 @Table(name = "micropost")
 public class MicropostEntity extends Model{
@@ -49,4 +52,9 @@ public class MicropostEntity extends Model{
         this.updated_at = new Timestamp(new Date().getTime());
     }
 
+
+    public String getDate() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd (E) HH:mm:ss");
+        return df.format(this.updated_at);
+    }
 }
