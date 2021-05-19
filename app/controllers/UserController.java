@@ -1,12 +1,16 @@
 package controllers;
 
 import models.*;
+import models.UserForm;
+import models.UserRepository;
+import models.UserEntity;
 
 import java.lang.ProcessBuilder.Redirect;
-import java.util.*;
-import javax.inject.*;
+import java.util.List;
+import javax.inject.Inject;
 import play.mvc.*;
-import play.data.*;
+import play.data.Form;
+import play.data.FormFactory;
 import io.ebean.*;
 import play.i18n.MessagesApi;
 
