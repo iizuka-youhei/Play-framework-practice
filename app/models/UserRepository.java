@@ -1,6 +1,7 @@
 package models;
 
 import models.UserEntity;
+import java.util.List;
 
 import io.ebean.*;
 

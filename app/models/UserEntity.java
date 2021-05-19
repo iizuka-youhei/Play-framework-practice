@@ -1,7 +1,8 @@
 package models;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.*;
