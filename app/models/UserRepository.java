@@ -1,10 +1,8 @@
 package models;
 
-import java.util.*;
-import models.*;
-import play.db.ebean.*;
-import io.ebean.*;
+import models.UserEntity;
 
+import io.ebean.*;
 
 public class UserRepository {
     public EbeanServer ebean;
