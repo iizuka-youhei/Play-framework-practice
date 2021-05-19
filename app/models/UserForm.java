@@ -1,9 +1,4 @@
-package controllers;
-
-import java.util.Date;
-import java.sql.Timestamp;
-import java.util.*;
-import play.data.validation.Constraints.*;
+package models;
 
 public class UserForm {
     protected int id;

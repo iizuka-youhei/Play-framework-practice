@@ -1,8 +1,7 @@
 package models;
 
-import java.util.*;
-import models.*;
-import play.db.ebean.*;
+import java.util.List;
+import models.MicropostEntity;
 import io.ebean.*;
 
 public class MicropostRepository {
