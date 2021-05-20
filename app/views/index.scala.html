@@ -1,30 +1,46 @@
 @import play.mvc.Http.Request
-@(msg:String, data:List[MicropostEntity], postform:Form[PostForm])(implicit request: Request, messages: play.i18n.Messages)
+@(msg:String, data:List[MicropostEntity], postform:Form[PostForm], searchform:Form[SearchForm], loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
 
 @main("Welcome to Play") {
-  <h1>掲示板</h1>
-  @helper.form(action=routes.HomeController.create()) {
-    @helper.CSRF.formField
-    @helper.inputText(postform("name"))
-    @helper.inputText(postform("title"))
-    @helper.inputText(postform("message"))
-    @helper.inputText(postform("link"))
-    @helper.inputText(postform("deletekey"))
-    <button>投稿する</button>
+  @if(request.session().get("login").isPresent()) {
+    <div><a href="@routes.UserController.logout()">ログアウト</a></div>
+    <div>ようこそ@loginUser.getName()</div>
+  } else {
+    <div><a href="@routes.UserController.login()">ログイン</a></div>
   }
+
+  @helper.form(action=routes.HomeController.search()) {
+    @helper.CSRF.formField
+    @helper.inputText(searchform("keyword"))
+    <button>検索</button>
+  }
+ 
+
+  <h1>掲示板</h1>
+  @if(request.session().get("login").isPresent()) {
+    @helper.form(action=routes.HomeController.create()) {
+      @helper.CSRF.formField
+      @helper.inputText(postform("title"))
+      @helper.textarea(postform("message"))
+      @helper.inputText(postform("link"))
+      <button>投稿する</button>
+    }
+  }
+  
   <h2>@msg</h2>
   <ul>
     @for(post <- data) {
       <li>
-        <div>投稿ID：@post.id</div>
-        <div>投稿者：@post.name</div>
-        <div>タイトル：@post.title</div>
-        @post.message<br>
-        <a href="@post.link">@post.link</a><br>
-        @post.updated_at<br>
-        <!-- @post.deletekey -->
-        <div><a href="@routes.HomeController.edit(post.id)">編集する</a></div>
-        <div><a href="@routes.HomeController.delete(post.id)">削除する</a></div>
+        <div>投稿ID：@post.getId()</div>
+        <div>投稿者：@post.user.getName()</div>
+        <div>タイトル：@post.getTitle()</div>
+        @post.getMessage()<br>
+        <a href="@post.getLink()">@post.getLink()</a><br>
+        @post.getDate()<br>
+        @if(request.session().get("login").isPresent() && post.user.getId() == loginUser.getId()){
+          <div><a href="@routes.HomeController.edit(post.getId())">編集する</a></div>
+          <div><a href="@routes.HomeController.delete(post.getId())">削除する</a></div>
+        }
       </li>
       <br>
     }

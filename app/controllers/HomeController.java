@@ -1,13 +1,16 @@
 package controllers;
 
-import models.*;
+import models.MicropostRepository;
+import models.PostForm;
+import models.UserEntity;
+import models.MicropostEntity;
+import models.SearchForm;
 
 import java.lang.ProcessBuilder.Redirect;
-import java.util.*;
-import javax.inject.*;
+import javax.inject.Inject;
 import play.mvc.*;
-import play.data.*;
-import io.ebean.*;
+import play.data.Form;
+import play.data.FormFactory;
 import play.i18n.MessagesApi;
 
 /**
@@ -16,6 +19,7 @@ import play.i18n.MessagesApi;
  */
 public class HomeController extends Controller {
     private final Form<PostForm> postform;
+    private final Form<SearchForm> searchform;
     private final FormFactory formFactory;
     private final MicropostRepository repo;
     private MessagesApi messagesApi;
@@ -24,21 +28,21 @@ public class HomeController extends Controller {
     public HomeController(FormFactory formFactory, MicropostRepository micropostRepository, MessagesApi messagesApi) {
         this.formFactory = formFactory;
         this.postform = formFactory.form(PostForm.class);
+        this.searchform = formFactory.form(SearchForm.class);
         this.repo = micropostRepository;
         this.messagesApi = messagesApi;
     }
 
-    /**
-     * An action that renders an HTML page with a welcome message.
-     * The configuration in the <code>routes</code> file means that
-     * this method will be called when the application receives a
-     * <code>GET</code> request with a path of <code>/</code>.
-     */
+    @With(BeforeAction.class)
     public Result index(Http.Request request) {
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
+
         return ok(views.html.index.render(
             "投稿一覧",
             repo.list(),
             postform,
+            searchform,
+            loginUser,
             request,
             messagesApi.preferred(request)
         ));
@@ -52,31 +56,43 @@ public class HomeController extends Controller {
         ));
     }
 
+    @With(BeforeAction.class)
     public Result create(Http.Request request) {
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
+        if(loginUser == null) {
+            return redirect(routes.HomeController.index()); // 不適切なユーザの場合
+        }
         Form form = formFactory.form(MicropostEntity.class);
         try {
             MicropostEntity micropost = (MicropostEntity)form.bindFromRequest(request).get();
+            micropost.user = loginUser;
             repo.add(micropost);
             return redirect(routes.HomeController.index());
         } catch(IllegalStateException e) {
-            return ok(views.html.index.render(
+            return badRequest(views.html.index.render(
                 "投稿一覧",
                 repo.list(),
                 form.bindFromRequest(request),
+                searchform,
+                loginUser,
                 request,
                 messagesApi.preferred(request)
             ));
+
         }
     }
 
+    @With(BeforeAction.class)
     public Result edit(int id, Http.Request request) {
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity micropost = repo.get(id);
+        if(loginUser == null || micropost.user.getId() != loginUser.getId()) {
+            return redirect(routes.HomeController.index()); // 不適切なユーザの場合
+        }
         PostForm form = new PostForm(id);
-        form.setName(micropost.name);
-        form.setTitle(micropost.title);
-        form.setMessage(micropost.message);
-        form.setLink(micropost.link);
-        form.setDeletekey(micropost.deletekey);
+        form.setTitle(micropost.getTitle());
+        form.setMessage(micropost.getMessage());
+        form.setLink(micropost.getLink());
 
         Form<PostForm> formdata = postform.fill(form);
         return ok(views.html.edit.render(
@@ -88,15 +104,17 @@ public class HomeController extends Controller {
         ));
     }
 
+    @With(BeforeAction.class)
     public Result update(int id, Http.Request request) {
-        // PostForm form = formFactory.form(PostForm.class).bindFromRequest(request).get();
-        // MicropostEntity post = new MicropostEntity(id, form.getName(), form.getTitle(), form.getMessage(), form.getLink(), form.getDeletekey());
-        // repo.update(post);
-        // return redirect(routes.HomeController.index());
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
+        MicropostEntity microPost = repo.get(id);
+        if(loginUser == null || microPost.user.getId() != loginUser.getId()) {
+            return redirect(routes.HomeController.index()); // 不適切なユーザの場合
+        }
         Form form = formFactory.form(MicropostEntity.class);
         try {
             MicropostEntity micropost = (MicropostEntity)form.bindFromRequest(request).get();
-            MicropostEntity post = new MicropostEntity(id, micropost.name, micropost.title, micropost.message, micropost.link, micropost.deletekey);
+            MicropostEntity post = new MicropostEntity(id, loginUser, micropost.getTitle(), micropost.getMessage(), micropost.getLink());
             repo.update(post);
             return redirect(routes.HomeController.index());
         } catch(IllegalStateException e) {
@@ -110,7 +128,13 @@ public class HomeController extends Controller {
         }
     }
 
+    @With(BeforeAction.class)
     public Result delete(int id, Http.Request request) {
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
+        MicropostEntity post = repo.get(id);
+        if(loginUser == null || post.user.getId() != loginUser.getId()) {
+            return redirect(routes.HomeController.index()); // 不適切なユーザの場合
+        }
         return ok(views.html.delete.render(
             "投稿の削除",
             repo.get(id),
@@ -121,18 +145,26 @@ public class HomeController extends Controller {
         ));
     }
 
+    @With(BeforeAction.class)
     public Result remove(int id, Http.Request request) {
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
         MicropostEntity post = repo.get(id);
-        PostForm form = formFactory.form(PostForm.class).bindFromRequest(request).get();
-        
-        System.out.println(request);
-        
-
-        if(form.getDeletekey().equals(post.deletekey)){
-            repo.delete(id);
-            return redirect(routes.HomeController.index());
+        if(loginUser != null && post.user.getId() == loginUser.getId()) {
+            repo.delete(post);
         }
-        return redirect(routes.HomeController.delete(post.id));
+        return redirect(routes.HomeController.index());
+
+    }
+
+    public Result search(Http.Request request) {
+        Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest(request);
+        String keyword = form.get().getKeyword();
+        return ok(views.html.search.render(
+            "投稿の検索",
+            repo.find(keyword),
+            request,
+            messagesApi.preferred(request)
+        ));
     }
 
 }

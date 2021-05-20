@@ -1,8 +1,7 @@
 package models;
 
-import java.util.*;
-import models.*;
-import play.db.ebean.*;
+import java.util.List;
+import models.MicropostEntity;
 import io.ebean.*;
 
 public class MicropostRepository {
@@ -35,6 +34,14 @@ public class MicropostRepository {
 
     public void delete(MicropostEntity micropost) {
         micropost.delete();
+    }
+
+    public List<MicropostEntity> find(String keyword) {
+        return find.query().where()
+                .or()
+                    .ilike("title", "%" + keyword + "%")
+                    .ilike("message", "%" + keyword + "%")
+                .endOr().findList();
     }
 
 }
