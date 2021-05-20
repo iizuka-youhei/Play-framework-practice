@@ -12,6 +12,7 @@ create table micropost (
 
 insert into micropost values (default, 1, '挨拶です', 'こんにちは', 'https://www.kent-web.com/bbs/light/light.cgi', default, default);
 insert into micropost values (default, 2, 'テスト投稿です', 'テストですよ', '', default, default);
+insert into micropost values (default, 1, '開発', 'テストコードは重要です。', '', default, default);
 
 # --- !Downs
 drop table micropost

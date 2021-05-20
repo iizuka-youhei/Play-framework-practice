@@ -1,5 +1,5 @@
 @import play.mvc.Http.Request
-@(msg:String, data:List[MicropostEntity], postform:Form[PostForm], loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
+@(msg:String, data:List[MicropostEntity], postform:Form[PostForm], searchform:Form[SearchForm], loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
 
 @main("Welcome to Play") {
   @if(request.session().get("login").isPresent()) {
@@ -7,6 +7,12 @@
     <div>ようこそ@loginUser.getName()</div>
   } else {
     <div><a href="@routes.UserController.login()">ログイン</a></div>
+  }
+
+  @helper.form(action=routes.HomeController.search()) {
+    @helper.CSRF.formField
+    @helper.inputText(searchform("keyword"))
+    <button>検索</button>
   }
  
 
