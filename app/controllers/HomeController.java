@@ -4,6 +4,7 @@ import models.MicropostRepository;
 import models.PostForm;
 import models.UserEntity;
 import models.MicropostEntity;
+import models.SearchForm;
 
 import java.lang.ProcessBuilder.Redirect;
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import play.i18n.MessagesApi;
  */
 public class HomeController extends Controller {
     private final Form<PostForm> postform;
+    private final Form<SearchForm> searchform;
     private final FormFactory formFactory;
     private final MicropostRepository repo;
     private MessagesApi messagesApi;
@@ -26,6 +28,7 @@ public class HomeController extends Controller {
     public HomeController(FormFactory formFactory, MicropostRepository micropostRepository, MessagesApi messagesApi) {
         this.formFactory = formFactory;
         this.postform = formFactory.form(PostForm.class);
+        this.searchform = formFactory.form(SearchForm.class);
         this.repo = micropostRepository;
         this.messagesApi = messagesApi;
     }
@@ -38,6 +41,7 @@ public class HomeController extends Controller {
             "投稿一覧",
             repo.list(),
             postform,
+            searchform,
             loginUser,
             request,
             messagesApi.preferred(request)
@@ -69,6 +73,7 @@ public class HomeController extends Controller {
                 "投稿一覧",
                 repo.list(),
                 form.bindFromRequest(request),
+                searchform,
                 loginUser,
                 request,
                 messagesApi.preferred(request)
@@ -149,6 +154,17 @@ public class HomeController extends Controller {
         }
         return redirect(routes.HomeController.index());
 
+    }
+
+    public Result search(Http.Request request) {
+        Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest(request);
+        String keyword = form.get().getKeyword();
+        return ok(views.html.search.render(
+            "投稿の検索",
+            repo.find(keyword),
+            request,
+            messagesApi.preferred(request)
+        ));
     }
 
 }

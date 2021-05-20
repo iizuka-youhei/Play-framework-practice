@@ -36,4 +36,12 @@ public class MicropostRepository {
         micropost.delete();
     }
 
+    public List<MicropostEntity> find(String keyword) {
+        return find.query().where()
+                .or()
+                    .ilike("title", "%" + keyword + "%")
+                    .ilike("message", "%" + keyword + "%")
+                .endOr().findList();
+    }
+
 }
