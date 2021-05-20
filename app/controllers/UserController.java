@@ -1,6 +1,6 @@
 package controllers;
 
-import models.UserForm;
+import models.UserLoginForm;
 import models.UserRepository;
 import models.UserEntity;
 
@@ -14,7 +14,7 @@ import io.ebean.*;
 import play.i18n.MessagesApi;
 
 public class UserController extends Controller{
-    private final Form<UserForm> userform;
+    private final Form<UserLoginForm> userLoginForm;
     private final FormFactory formFactory;
     private final UserRepository repo;
     private MessagesApi messagesApi;
@@ -22,7 +22,7 @@ public class UserController extends Controller{
     @Inject
     public UserController(FormFactory formFactory, UserRepository userRepository, MessagesApi messagesApi) {
         this.formFactory = formFactory;
-        this.userform = formFactory.form(UserForm.class);
+        this.userLoginForm = formFactory.form(UserLoginForm.class);
         this.repo = userRepository;
         this.messagesApi = messagesApi;
     }
@@ -30,19 +30,33 @@ public class UserController extends Controller{
     public Result login(Http.Request request) {
         return ok(views.html.login.render(
             "ログイン",
-            userform,
+            userLoginForm,
             request,
             messagesApi.preferred(request)
         ));
     }
 
     public Result logincheck(Http.Request request) {
-        UserForm form = formFactory.form(UserForm.class).bindFromRequest(request).get();
-        List<UserEntity> user = repo.get("email", form.getEmail());
-        if(form.getPassword().equals(user.get(0).getPassword())) {
-            return redirect(routes.HomeController.index()).addingToSession(request, "login", user.get(0).getEmail());
+        Form<UserLoginForm> form = userLoginForm.bindFromRequest(request);
+        
+        if (form.hasErrors()){
+            return badRequest(views.html.login.render("ログイン", userLoginForm, request, messagesApi.preferred(request)));
         }
-        return redirect(routes.UserController.login());
+        else {
+            UserLoginForm data = form.get();
+            List<UserEntity> user = repo.get("email", data.getEmail());
+            
+            try {
+                if(data.getPassword().equals(user.get(0).getPassword())) {
+                    return redirect(routes.HomeController.index()).addingToSession(request, "login", user.get(0).getEmail());
+                }
+                return redirect(routes.UserController.login());
+            }
+            catch (IndexOutOfBoundsException e){
+                return redirect(routes.UserController.login());
+            }
+        }
+
     }
 
     public Result logout(Http.Request request) {
