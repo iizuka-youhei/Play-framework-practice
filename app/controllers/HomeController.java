@@ -156,15 +156,35 @@ public class HomeController extends Controller {
 
     }
 
+    @With(BeforeAction.class)
     public Result search(Http.Request request) {
-        Form<SearchForm> form = formFactory.form(SearchForm.class).bindFromRequest(request);
-        String keyword = form.get().getKeyword();
-        return ok(views.html.search.render(
-            "投稿の検索",
-            repo.find(keyword),
-            request,
-            messagesApi.preferred(request)
-        ));
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
+        Form form = formFactory.form(SearchForm.class);
+        try {
+            SearchForm sform = (SearchForm)form.bindFromRequest(request).get();
+            String keyword = sform.getKeyword();
+
+            return ok(views.html.index.render(
+                keyword + "での検索結果",
+                repo.find(keyword),
+                postform,
+                searchform.fill(sform),
+                loginUser,
+                request,
+                messagesApi.preferred(request)
+            ));
+        } catch(IllegalStateException e) {
+            return badRequest(views.html.index.render(
+                "投稿一覧",
+                repo.list(),
+                postform,
+                form.bindFromRequest(request),
+                loginUser,
+                request,
+                messagesApi.preferred(request)
+            ));
+        }
+
     }
 
 }

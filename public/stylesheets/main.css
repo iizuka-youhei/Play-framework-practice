@@ -1,0 +1,25 @@
+header {
+    margin-bottom: 30px;
+}
+
+dd.info {
+    display: none;
+}
+
+dd.error {
+    color: #f00;
+}
+
+dl#keyword_field dt {
+    display: none;
+}
+
+dl#keyword_field dd.error {
+    display: none;
+}
+
+.search-field {
+    padding-bottom: 30px;
+}
+
+

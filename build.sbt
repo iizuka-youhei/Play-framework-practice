@@ -15,3 +15,7 @@ libraryDependencies += jdbc
 libraryDependencies += "javax.xml.bind" % "jaxb-api" % "2.3.1"
 libraryDependencies += "javax.activation" % "activation" % "1.1.1"
 libraryDependencies += "org.glassfish.jaxb" % "jaxb-runtime" % "2.3.2"
+
+libraryDependencies += "org.webjars" %% "webjars-play" % "2.8.0"
+libraryDependencies += "org.webjars" % "bootstrap" % "3.3.4"
+libraryDependencies += "org.webjars" % "requirejs" % "2.2.0"

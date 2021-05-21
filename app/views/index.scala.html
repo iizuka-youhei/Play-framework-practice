@@ -1,48 +1,64 @@
 @import play.mvc.Http.Request
-@(msg:String, data:List[MicropostEntity], postform:Form[PostForm], searchform:Form[SearchForm], loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
+@(msg:String, data:List[MicropostEntity], postform:Form[PostForm], searchform:Form[SearchForm],
+loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
 
 @main("Welcome to Play") {
-  @if(request.session().get("login").isPresent()) {
-    <div><a href="@routes.UserController.logout()">ログアウト</a></div>
-    <div>ようこそ@loginUser.getName()</div>
-  } else {
-    <div><a href="@routes.UserController.login()">ログイン</a></div>
-  }
-
-  @helper.form(action=routes.HomeController.search()) {
-    @helper.CSRF.formField
-    @helper.inputText(searchform("keyword"))
-    <button>検索</button>
-  }
- 
-
-  <h1>掲示板</h1>
-  @if(request.session().get("login").isPresent()) {
-    @helper.form(action=routes.HomeController.create()) {
-      @helper.CSRF.formField
-      @helper.inputText(postform("title"))
-      @helper.textarea(postform("message"))
-      @helper.inputText(postform("link"))
-      <button>投稿する</button>
-    }
-  }
-  
-  <h2>@msg</h2>
-  <ul>
-    @for(post <- data) {
-      <li>
-        <div>投稿ID：@post.getId()</div>
-        <div>投稿者：@post.user.getName()</div>
-        <div>タイトル：@post.getTitle()</div>
-        @post.getMessage()<br>
-        <a href="@post.getLink()">@post.getLink()</a><br>
-        @post.getDate()<br>
-        @if(request.session().get("login").isPresent() && post.user.getId() == loginUser.getId()){
-          <div><a href="@routes.HomeController.edit(post.getId())">編集する</a></div>
-          <div><a href="@routes.HomeController.delete(post.getId())">削除する</a></div>
+    <header>
+        @if(request.session().get("login").isPresent()) {
+            <div><a href="@routes.UserController.logout()">ログアウト</a></div>
+            <div>ようこそ@loginUser.getName()</div>
+        } else {
+            <div><a href="@routes.UserController.login()">ログイン</a></div>
         }
-      </li>
-      <br>
+    </header>
+
+    <div class="container-fluid search-field">
+        <div class="row">
+            @helper.form(action=routes.HomeController.search()) {
+            @helper.CSRF.formField
+            <div class="input-group col-sm-4">
+                @helper.inputText(searchform("keyword"), Symbol("class") -> "form-control")
+                <span class="input-group-btn">
+                    <button class="btn btn-primary">検索</button>
+                </span>
+            </div>
+            }
+        </div>
+    </div>
+
+    <h1>掲示板</h1>
+    @if(request.session().get("login").isPresent()) {
+        <div class="row">
+            @helper.form(action=routes.HomeController.create()) {
+                @helper.CSRF.formField
+                <div class="col-sm-8">
+                    @helper.inputText(postform("title"), Symbol("class") -> "form-control")
+                    @helper.textarea(postform("message"), Symbol("class") -> "form-control")
+                    @helper.inputText(postform("link"), Symbol("class") -> "form-control")
+                </div>
+                <div class="col-sm-12">
+                    <button class="btn btn-primary">投稿する</button>
+                </div>
+            }
+        </div>
     }
-  </ul>
+
+    <h2>@msg</h2>
+    <ul>
+        @for(post <- data) { 
+            <li>
+                <div>投稿ID：@post.getId()</div>
+                <div>投稿者：@post.user.getName()</div>
+                <div>タイトル：@post.getTitle()</div>
+                @post.getMessage()<br>
+                <a href="@post.getLink()">@post.getLink()</a><br>
+                @post.getDate()<br>
+                @if(request.session().get("login").isPresent() && post.user.getId() == loginUser.getId()){
+                    <div><a href="@routes.HomeController.edit(post.getId())">編集する</a></div>
+                    <div><a href="@routes.HomeController.delete(post.getId())">削除する</a></div>
+                }
+            </li>
+            <hr>
+        }
+    </ul>
 }

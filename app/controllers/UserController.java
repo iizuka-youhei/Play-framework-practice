@@ -41,8 +41,7 @@ public class UserController extends Controller{
         
         if (form.hasErrors()){
             return badRequest(views.html.login.render("ログイン", userLoginForm, request, messagesApi.preferred(request)));
-        }
-        else {
+        } else {
             UserLoginForm data = form.get();
             List<UserEntity> user = repo.get("email", data.getEmail());
             
