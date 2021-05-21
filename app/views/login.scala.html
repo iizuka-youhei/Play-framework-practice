@@ -1,7 +1,7 @@
 @import play.mvc.Http.Request
-@(message:String, userform:Form[UserLoginForm])(implicit request: Request, messages: play.i18n.Messages)
+@(message:String, userform:Form[UserLoginForm], loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
 
-@main("login") {
+@main("login", request, loginUser) {
     <h2>@message</h2>
 
     @helper.form(action=routes.UserController.logincheck) {

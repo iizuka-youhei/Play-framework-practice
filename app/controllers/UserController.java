@@ -27,22 +27,27 @@ public class UserController extends Controller{
         this.messagesApi = messagesApi;
     }
 
+    @With(BeforeAction.class)
     public Result login(Http.Request request) {
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
+
         return ok(views.html.login.render(
             "ログイン",
             userLoginForm,
+            loginUser,
             request,
             messagesApi.preferred(request)
         ));
     }
 
+    @With(BeforeAction.class)
     public Result logincheck(Http.Request request) {
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
         Form<UserLoginForm> form = userLoginForm.bindFromRequest(request);
         
         if (form.hasErrors()){
-            return badRequest(views.html.login.render("ログイン", userLoginForm, request, messagesApi.preferred(request)));
-        }
-        else {
+            return badRequest(views.html.login.render("ログイン", userLoginForm, loginUser, request, messagesApi.preferred(request)));
+        } else {
             UserLoginForm data = form.get();
             List<UserEntity> user = repo.get("email", data.getEmail());
             

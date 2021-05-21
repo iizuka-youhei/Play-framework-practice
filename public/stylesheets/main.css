@@ -1,0 +1,61 @@
+.flex {
+    display: flex;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.flex-end {
+    justify-content: flex-end;
+}
+
+h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+h1 a:hover {
+    text-decoration: none;
+}
+
+header {
+    padding: 10px 0;
+    margin-bottom: 30px;
+    background-color: #337ab7;
+    color: #fff;
+}
+
+header .container a {
+    color: #fff;
+}
+
+header .loginUserName {
+    margin-right: 20px;
+}
+
+dd.info {
+    display: none;
+}
+
+dd.error {
+    color: #f00;
+}
+
+dl#keyword_field dt {
+    display: none;
+}
+
+dl#keyword_field dd.error {
+    display: none;
+}
+
+.search-field {
+    padding-bottom: 30px;
+}
+
+.post-form-field {
+    padding-bottom: 30px;
+}
+
+
