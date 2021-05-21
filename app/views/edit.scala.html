@@ -1,7 +1,7 @@
 @import play.mvc.Http.Request
-@(message:String, postform:Form[PostForm], id:Int)(implicit request: Request, messages: play.i18n.Messages)
+@(message:String, postform:Form[PostForm], id:Int, loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
 
-@main("edit post") {
+@main("edit post", request, loginUser) {
     <p>@message</p>
 
     @helper.form(action=routes.HomeController.update(id)) {

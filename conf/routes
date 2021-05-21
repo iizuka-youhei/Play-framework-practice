@@ -4,7 +4,7 @@
 
 # An example controller showing a sample home page
 GET     /                controllers.HomeController.index(request: Request)
-GET     /show/:id        controllers.HomeController.show(id: Int)
+GET     /show/:id        controllers.HomeController.show(id: Int, request: Request)
 POST    /create          controllers.HomeController.create(request: Request)
 GET     /edit/:id        controllers.HomeController.edit(id: Int, request: Request)
 POST    /update/:id      controllers.HomeController.update(id:Int, request: Request)

@@ -48,11 +48,17 @@ public class HomeController extends Controller {
         ));
     }
 
-    public Result show(int id) {
+    @With(BeforeAction.class)
+    public Result show(int id, Http.Request request) {
+        UserEntity loginUser = request.attrs().get(Attrs.USER);
+
         return ok(views.html.show.render(
             "投稿の表示",
             repo.get(id),
-            id
+            id,
+            loginUser,
+            request,
+            messagesApi.preferred(request)
         ));
     }
 
@@ -99,6 +105,7 @@ public class HomeController extends Controller {
             "投稿の編集",
             formdata,
             id,
+            loginUser,
             request,
             messagesApi.preferred(request)
         ));
@@ -122,6 +129,7 @@ public class HomeController extends Controller {
                 "投稿の編集",
                 form.bindFromRequest(request),
                 id,
+                loginUser,
                 request,
                 messagesApi.preferred(request)
             ));
@@ -140,6 +148,7 @@ public class HomeController extends Controller {
             repo.get(id),
             id,
             postform,
+            loginUser,
             request,
             messagesApi.preferred(request)
         ));

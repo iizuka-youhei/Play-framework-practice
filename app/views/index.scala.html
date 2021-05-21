@@ -2,22 +2,14 @@
 @(msg:String, data:List[MicropostEntity], postform:Form[PostForm], searchform:Form[SearchForm],
 loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
 
-@main("Welcome to Play") {
-    <header>
-        @if(request.session().get("login").isPresent()) {
-            <div><a href="@routes.UserController.logout()">ログアウト</a></div>
-            <div>ようこそ@loginUser.getName()</div>
-        } else {
-            <div><a href="@routes.UserController.login()">ログイン</a></div>
-        }
-    </header>
+@main("掲示板", request ,loginUser) {
 
     <div class="container-fluid search-field">
         <div class="row">
             @helper.form(action=routes.HomeController.search()) {
             @helper.CSRF.formField
             <div class="input-group col-sm-4">
-                @helper.inputText(searchform("keyword"), Symbol("class") -> "form-control")
+                @helper.inputText(searchform("keyword"), Symbol("class") -> "form-control", Symbol("placeholder") -> "キーワード")
                 <span class="input-group-btn">
                     <button class="btn btn-primary">検索</button>
                 </span>
@@ -26,9 +18,9 @@ loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
         </div>
     </div>
 
-    <h1>掲示板</h1>
+    <h2>掲示板</h2>
     @if(request.session().get("login").isPresent()) {
-        <div class="row">
+        <div class="row post-form-field">
             @helper.form(action=routes.HomeController.create()) {
                 @helper.CSRF.formField
                 <div class="col-sm-8">

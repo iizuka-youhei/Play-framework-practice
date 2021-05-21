@@ -1,7 +1,7 @@
 @import play.mvc.Http.Request
-@(message:String, post:MicropostEntity, id:Int, postform:Form[PostForm])(implicit request: Request, messages: play.i18n.Messages)
+@(message:String, post:MicropostEntity, id:Int, postform:Form[PostForm], loginUser:UserEntity)(implicit request: Request, messages: play.i18n.Messages)
 
-@main("Show Micropost") {
+@main("Show Micropost", request, loginUser) {
     <h2>@message</h2>
     <h3>以下の投稿を削除します。</h3>
     <p>ID : @post.getId()</p>
