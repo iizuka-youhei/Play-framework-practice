@@ -30,6 +30,9 @@ public class UserController extends Controller{
     @With(BeforeAction.class)
     public Result login(Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
+        if(loginUser != null) {
+            return redirect(routes.HomeController.index()); // 不適切なユーザの場合
+        }
 
         return ok(views.html.login.render(
             "ログイン",
@@ -43,6 +46,10 @@ public class UserController extends Controller{
     @With(BeforeAction.class)
     public Result logincheck(Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
+        if(loginUser != null) {
+            return redirect(routes.HomeController.index()); // 不適切なユーザの場合
+        }
+
         Form<UserLoginForm> form = userLoginForm.bindFromRequest(request);
         
         if (form.hasErrors()){

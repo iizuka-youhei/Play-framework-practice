@@ -52,6 +52,10 @@ public class HomeController extends Controller {
     public Result show(int id, Http.Request request) {
         UserEntity loginUser = request.attrs().get(Attrs.USER);
 
+        if(repo.get(id) == null) {
+            return redirect(routes.HomeController.index());
+        }
+
         return ok(views.html.show.render(
             "投稿の表示",
             repo.get(id),
