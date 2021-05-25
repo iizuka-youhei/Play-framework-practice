@@ -67,6 +67,16 @@ public class HomeControllerTest extends WithApplication {
     }
 
     @Test
+    public void IDに文字列を入れたらBad_Requestを返す() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/show/abc");
+        
+        Result result = route(app, request);
+        assertEquals(BAD_REQUEST, result.status());
+    }
+
+    @Test
     public void 掲示板に投稿できるか() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(POST)
