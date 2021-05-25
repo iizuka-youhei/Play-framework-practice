@@ -203,4 +203,26 @@ public class MicropostEntityTest extends WithApplication {
         assertEquals(post.getTitle(), updated_post.getTitle());
         assertEquals(post.getMessage(), updated_post.getMessage());
     }
+
+    @Test
+    public void titleもmessageも未記入だと投稿の編集に失敗する() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(POST)
+                .bodyForm(ImmutableMap.of("title", "", "message", "", "link", ""))
+                .uri("/update/1");
+        
+        request = CSRFTokenHelper.addCSRFToken(request);
+
+        MicropostEntity post = Ebean.find(MicropostEntity.class, 1);
+        request.session("login", Ebean.find(UserEntity.class, 1).getEmail());
+        int post_num = Ebean.find(MicropostEntity.class).findList().size();
+        
+        Result result = route(app, request);
+        MicropostEntity updated_post = Ebean.find(MicropostEntity.class, 1);
+
+        assertEquals(post_num, Ebean.find(MicropostEntity.class).findList().size());
+        assertEquals(OK, result.status());
+        assertEquals(post.getTitle(), updated_post.getTitle());
+        assertEquals(post.getMessage(), updated_post.getMessage());
+    }
 }

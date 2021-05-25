@@ -50,16 +50,17 @@ public class UserControllerTest extends WithApplication {
     }
 
     @Test
-    public void ログインしたらトップページにリダイレクトする() {
+    public void ログインしたらトップページにリダイレクトしてセッションにemailを保存() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(POST)
                 .bodyForm(ImmutableMap.of("email", "sato@gmail.com", "password", "sato123"))
                 .uri("/logincheck");
 
-        // UserEntity user = Ebean.find(UserEntity.class, 2);
+        UserEntity user = Ebean.find(UserEntity.class, 2);
         Result result = route(app, request);
         assertEquals(SEE_OTHER, result.status());
         assertEquals("/", result.redirectLocation().get());
+        assertEquals(user.getEmail(), result.session().get("login").get());
     }
 
     @Test
