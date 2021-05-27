@@ -1,5 +1,6 @@
 package controllers;
 
+import models.UserRepository;
 import models.UserEntity;
 import models.MicropostEntity;
 
@@ -25,6 +26,7 @@ import static org.junit.Assert.*;
 import static play.mvc.Http.Status.*;
 import static play.test.Helpers.*;
 // import static play.test.Helpers.route;
+import javax.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +37,8 @@ public class HomeControllerTest extends WithApplication {
     private final UserRepository repo;
 
     @Inject
-    public HomeControllerTest(UserRepository micropostRepository) {
-        this.repo = micropostRepository;
+    public HomeControllerTest(UserRepository userRepository) {
+        this.repo = userRepository;
     }
 
     @Override
@@ -59,19 +61,19 @@ public class HomeControllerTest extends WithApplication {
     }
 
     public UserEntity getLoginUser() {
-        Connection connection = database.getConnection();
+        // Connection connection = database.getConnection();
         UserEntity loginUser = null;
-        try {
-            ResultSet rs = connection.prepareStatement("select * from user where id = 1").executeQuery();
+        // try {
+        //     ResultSet rs = connection.prepareStatement("select * from user where id = 1").executeQuery();
             
         
-            while(rs.next()){
-                loginUser = new UserEntity(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"));
-            }
-        } catch(SQLException e) {}
+        //     while(rs.next()){
+        //         loginUser = new UserEntity(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"));
+        //     }
+        // } catch(SQLException e) {}
 
         // loginUser = Ebean.find(UserEntity.class, 1);
-
+        loginUser = repo.get(3);
         return loginUser;
     }
 
