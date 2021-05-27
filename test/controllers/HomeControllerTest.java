@@ -34,12 +34,12 @@ import java.util.List;
 public class HomeControllerTest extends WithApplication {
 
     Database database;
-    private final UserRepository repo;
+    // private final UserRepository repo;
 
-    @Inject
-    public HomeControllerTest(UserRepository userRepository) {
-        this.repo = userRepository;
-    }
+    // @Inject
+    // public HomeControllerTest(UserRepository userRepository) {
+    //     this.repo = userRepository;
+    // }
 
     @Override
     protected Application provideApplication() {
@@ -61,19 +61,19 @@ public class HomeControllerTest extends WithApplication {
     }
 
     public UserEntity getLoginUser() {
-        // Connection connection = database.getConnection();
+        Connection connection = database.getConnection();
         UserEntity loginUser = null;
-        // try {
-        //     ResultSet rs = connection.prepareStatement("select * from user where id = 1").executeQuery();
+        try {
+            ResultSet rs = connection.prepareStatement("select * from user where id = 1").executeQuery();
             
         
-        //     while(rs.next()){
-        //         loginUser = new UserEntity(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"));
-        //     }
-        // } catch(SQLException e) {}
+            while(rs.next()){
+                loginUser = new UserEntity(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"));
+            }
+        } catch(SQLException e) {}
 
-        // loginUser = Ebean.find(UserEntity.class, 1);
-        loginUser = repo.get(3);
+        // // loginUser = Ebean.find(UserEntity.class, 1);
+        // loginUser = repo.get(3);
         return loginUser;
     }
 
