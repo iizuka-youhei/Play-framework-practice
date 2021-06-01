@@ -11,7 +11,7 @@ import javax.validation.*;
 import play.data.validation.*;
 import play.data.validation.Constraints.*;
 import io.ebean.*;
-import jdk.jfr.Registered;
+// import jdk.jfr.Registered;
 
 import java.text.SimpleDateFormat;
 

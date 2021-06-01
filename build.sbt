@@ -8,7 +8,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 scalaVersion := "2.13.5"
 
 libraryDependencies += guice
-libraryDependencies += "com.h2database" % "h2" % "1.4.192"
+// libraryDependencies += "com.h2database" % "h2" % "1.4.192"
+libraryDependencies +=  "mysql" % "mysql-connector-java" % "5.1.41"
 libraryDependencies += evolutions
 libraryDependencies += jdbc
 // To provide an implementation of JAXB-API, which is required by Ebean.

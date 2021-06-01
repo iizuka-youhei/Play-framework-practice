@@ -6,3 +6,9 @@ target
 /.project
 /.settings
 /RUNNING_PID
+
+.cache
+.ivy2/
+.sbt/
+db/data/
+.bash_history

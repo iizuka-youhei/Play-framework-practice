@@ -10,4 +10,23 @@ services:
         - .:/root
     ports:
         - 9000:9000
+    expose:
+        - "9000"
     tty: true
+
+  db:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+        MYSQL_DATABASE: playdb
+        MYSQL_USER: root
+        MYSQL_PASSWORD: root
+        MYSQL_ROOT_PASSWORD: root
+    volumes:
+        - ./db/data:/var/lib/mysql
+        - ./db/sql:/docker-entrypoint-initdb.d
+        - ./db/my.cnf:/etc/mysql/conf.d/my/cnf
+    ports:
+        - "3314:3306"
+    expose:
+        - "3306"
