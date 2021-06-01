@@ -1,0 +1,13 @@
+version: '3'
+services:
+
+  sbt:
+    image: hseeberger/scala-sbt:8u222_1.3.5_2.13.1
+    container_name: sbt
+    volumes:
+        # TODO:どのファイルをコンテナ内にマウントするののか
+        # このプロジェクト自体をコンテナ内の/rootディレクトリにマウントする
+        - .:/root
+    ports:
+        - 9000:9000
+    tty: true
