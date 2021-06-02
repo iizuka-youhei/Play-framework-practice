@@ -9,8 +9,8 @@ create table user (
     updated_at timestamp not null default current_timestamp
 );
 
-insert into user values (default, 'taro', 'taro@gmail.com', 'taro123', default, default);
-insert into user values (default, 'sato', 'sato@gmail.com', 'sato123', default, default);
+insert into user (name, email, password) values ('taro', 'taro@gmail.com', 'taro123');
+insert into user (name, email, password) values ('sato', 'sato@gmail.com', 'sato123');
 
 # --- !Downs
 drop table user

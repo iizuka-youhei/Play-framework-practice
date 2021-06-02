@@ -10,9 +10,9 @@ create table micropost (
     updated_at timestamp not null default current_timestamp
 );
 
-insert into micropost values (default, 1, '挨拶です', 'こんにちは', 'https://www.kent-web.com/bbs/light/light.cgi', default, default);
-insert into micropost values (default, 2, 'テスト投稿です', 'テストですよ', '', default, default);
-insert into micropost values (default, 1, '開発', 'テストコードは重要です。', '', default, default);
+insert into micropost (user_id, title, message, link) values (1, '挨拶です', 'こんにちは', 'https://www.kent-web.com/bbs/light/light.cgi');
+insert into micropost (user_id, title, message, link) values (2, 'テスト投稿です', 'テストですよ', '');
+insert into micropost (user_id, title, message, link) values (1, '開発', 'テストコードは重要です', '');
 
 # --- !Downs
 drop table micropost
